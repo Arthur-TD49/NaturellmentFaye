@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naturellement Faye - Légumes biologiques locaux</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="logo_icone.png" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Palette harmonisée avec votre NOUVEAU LOGO (Logo 1) */
+            --primary-green: #41b674;
+            --dark-green: #0a6b52;
+            --light-green: #9ee866;
+            --accent-orange: #ff7675;
+            --warm-brown: #5d4037;
+            --soft-white: #fdfcfb;
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --grid-color: rgba(65, 182, 116, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--soft-white);
+            overflow-x: hidden;
+            /* Subtil rappel du quadrillage maraîcher de votre logo 1 */
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* POPUP STYLES */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 107, 82, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-content {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 30px 60px rgba(10, 107, 82, 0.2);
+            text-align: center;
+            animation: popupIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes popupIn {
+            from { opacity: 0; transform: scale(0.5) translateY(-50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .popup-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--dark-green), var(--primary-green), var(--light-green));
+        }
+
+        .popup-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .popup-btn-primary {
+            background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+            color: white;
+        }
+
+        .popup-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(10, 107, 82, 0.3);
+        }
+
+        /* HEADER & LOGO INTEGRATION */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(10, 107, 82, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+        }
+
+        /* Style adapté pour accueillir votre logo n°1 */
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 45px; /* Ajustez la taille de votre logo ici */
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links a:hover {
+            color: var(--dark-green);
+        }
+
+        .nav-links a::after {
+            background: linear-gradient(90deg, var(--dark-green), var(--light-green));
+        }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(10, 107, 82, 0.75), rgba(65, 182, 116, 0.65)), url('https://images.unsplash.com/photo-1489450278009-822e9be04dff?auto=format&fit=crop&q=80&w=2072');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        /* SECTIONS & CARDS */
+        .section-title {
+            color: var(--dark-green);
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(10, 107, 82, 0.05);
+            border: 1px solid rgba(10, 107, 82, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(10, 107, 82, 0.12);
+        }
+
+        .contact-icon {
+            background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+        }
+
+        footer {
+            background: linear-gradient(135deg, #112520, #06120f);
+            color: white;
+        }
+
+        /* Bouton Trouver */
+        .btn-maps {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--dark-green), var(--primary-green)) !important;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(10, 107, 82, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-maps:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(10, 107, 82, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Loader timeout
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                // Activer le popup après le loader
+                document.getElementById('popupOverlay').classList.add('active');
+            }, 1200);
+
+            // Fermer le popup
+            document.getElementById('popupClose').addEventListener('click', () => document.getElementById('popupOverlay').classList.remove('active'));
+            document.getElementById('popupSecondary').addEventListener('click', () => document.getElementById('popupOverlay').classList.remove('active'));
+            document.getElementById('popupPrimary').addEventListener('click', () => {
+                document.getElementById('popupOverlay').classList.remove('active');
+                window.location.href = "#produits";
+            });
+        });
+    </script>
+
+    <div class="loader" id="loader" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, var(--dark-green), var(--primary-green)); z-index:10000; display:flex; align-items:center; justify-content:center; color:white; font-size:2rem; font-weight:800;">
+        <div style="text-align:center;">
+            <div>Naturellement Faye</div>
+            <p style="font-size:1rem; font-weight:300; margin-top:10px; opacity:0.8;">Légumes bio & locaux</p>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content">
+            <div class="popup-decoration"></div>
+            <button class="popup-close" id="popupClose" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-light);">&times;</button>
+            <div class="popup-icon" style="font-size:3rem; margin-bottom:1rem;">🌱</div>
+            <h2 class="popup-title">Bienvenue chez nous</h2>
+            <p class="popup-text">Découvrez nos délicieux légumes biologiques cultivés avec passion à Faye-d'Anjou.</p>
+            <div class="popup-buttons" style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
+                <button class="popup-btn popup-btn-primary" id="popupPrimary" style="padding:1rem; border:none; border-radius:15px; font-weight:600; cursor:pointer;">Découvrir nos légumes</button>
+                <button class="popup-btn popup-btn-secondary" id="popupSecondary" style="padding:1rem; border:none; background:rgba(10,107,82,0.05); color:var(--dark-green); border-radius:15px; font-weight:600; cursor:pointer;">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <header id="header">
+        <div class="nav-container">
+            <nav>
+                <a href="#accueil" class="logo-wrapper">
+                    <img src="votre_nouveau_logo.png" alt="Logo Naturellement Faye" class="logo-img">
+                    <span class="logo-text">Naturellement Faye</span>
+                </a>
+                
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#accueil">Accueil</a></li>
+                    <li><a href="#a-propos">À propos</a></li>
+                    <li><a href="#produits">Nos légumes</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="accueil">
+        <div class="hero-content">
+            <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight:900; margin-bottom:1rem; text-shadow: 0 4px 20px rgba(0,0,0,0.2);">Naturellement Faye</h1>
+            <p style="font-size: 1.2rem; max-width:600px; margin: 0 auto 2.5rem; opacity:0.95;">Des légumes frais, biologiques et locaux cultivés avec passion dans le respect de la nature.</p>
+            <a href="#produits" class="btn-maps" style="background:white !important; color:var(--dark-green) !important; box-shadow:0 10px 30px rgba(0,0,0,0.15);">Découvrir nos légumes</a>
+        </div>
+    </section>
+
+    <section class="section" id="a-propos" style="background: linear-gradient(135deg, #fdfcfb 0%, #eef7f2 100%);">
+        <div class="section-container">
+            <div class="section-header" style="text-align:center; margin-bottom:4rem;">
+                <h2 class="section-title" style="font-size:2.5rem; font-weight:800; margin-bottom:0.5rem;">Notre Histoire</h2>
+                <p class="section-subtitle">Une passion pour l'agriculture biologique</p>
+            </div>
+            <div class="two-col-grid">
+                <div>
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">Bienvenue chez Naturellement Faye. Nous sommes <strong>Anne-Laure et Mathieu</strong>, paysans passionnés par la culture de légumes biologiques.</p>
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">Notre philosophie est simple : cultiver en harmonie avec la nature, sans produits chimiques, en favorisant la biodiversité.</p>
+                    <p style="font-size: 1.1rem; line-height: 1.8;">Nous privilégions les variétés anciennes et locales pour vous offrir une expérience gustative authentique.</p>
+                </div>
+                <div style="border-radius: 30px; overflow: hidden; box-shadow: 0 30px 60px rgba(10,107,82,0.1);">
+                    <img src="papa.jpeg" alt="Ferme Naturellement Faye" style="width: 100%; height: 400px; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="produits">
+        <div class="section-container">
+            <div class="section-header" style="text-align:center; margin-bottom:4rem;">
+                <h2 class="section-title" style="font-size:2.5rem; font-weight:800; margin-bottom:0.5rem;">Nos Légumes</h2>
+                <p class="section-subtitle">Des légumes cultivés avec amour</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="IMG_0752.jpg" alt="Courges bio">
+                    <div class="product-card-content">
+                        <h3 style="margin-bottom:0.5rem; color:var(--dark-green);">Les courges</h3>
+                        <p>Une diversité de variétés pour plus de saveurs en automne et en hiver.</p>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="IMG_1469.JPG" alt="Betteraves bio">
+                    <div class="product-card-content">
+                        <h3 style="margin-bottom:0.5rem; color:var(--dark-green);">Les betteraves</h3>
+                        <p>Récoltées au petit matin pour préserver toute leur fraîcheur et leur douceur.</p>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="IMG_4499.jpeg" alt="Blettes bio">
+                    <div class="product-card-content">
+                        <h3 style="margin-bottom:0.5rem; color:var(--dark-green);">Les blettes & poirées</h3>
+                        <p>Deux légumes à la fois : des côtes croquantes et des feuilles savoureuses.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contact" style="background: linear-gradient(135deg, #eef7f2 0%, #fdfcfb 100%);">
+        <div class="section-container">
+            <div class="section-header" style="text-align:center; margin-bottom:4rem;">
+                <h2 class="section-title" style="font-size:2.5rem; font-weight:800; margin-bottom:0.5rem;">Nous Rencontrer</h2>
+                <p class="section-subtitle">Venez découvrir notre ferme</p>
+            </div>
+            <div class="two-col-grid">
+                <div>
+                    <div class="contact-info">
+                        <div class="contact-info-inner">
+                            <div class="contact-icon" style="width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; margin-bottom:1rem;">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-weight: 700; margin-bottom: 0.5rem; color:var(--dark-green);">Notre Ferme</h4>
+                                <p style="color: var(--text-light); margin-bottom:1.5rem;">Rue du Clos des Mailles<br>49380 Faye-d'Anjou, France</p>
+                                <a href="https://maps.google.com" class="btn-maps">Nous trouver</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="border-radius: 25px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.08); height: 350px; background:#e0e0e0; display:flex; align-items:center; justify-content:center; color:var(--text-light);">
+                    <span style="font-size:0.9rem;"><i class="fas fa-map-marked-alt"></i> Plan de la Rue du Clos des Mailles</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="nav-container" style="padding: 4rem 2rem 2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:2rem; margin-bottom:2rem;">
+                <div>
+                    <h3 style="font-size:1.6rem; font-weight:800; margin-bottom:0.5rem;">Naturellement Faye</h3>
+                    <p style="opacity:0.7; font-size:0.9rem;">Agriculture biologique locale à Faye-d'Anjou (49)</p>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="social-link" style="width:40px; height:40px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; text-decoration:none;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link" style="width:40px; height:40px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; text-decoration:none;"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:2rem; text-align:center; font-size:0.85rem; opacity:0.5;">
+                &copy; 2026 Naturellement Faye. Tous droits réservés. Mentions Légales.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
